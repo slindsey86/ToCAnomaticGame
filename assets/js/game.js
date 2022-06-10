@@ -21,6 +21,7 @@ function fakeFinishGame(score) {
 (function(){
 	var J = {
 	lastTime: (new Date()).getTime(),  //lasttime
+	BossLife: 30,
 	canvasWidth: 600,
 	canvasHeight: 600,
 	interval : 0,
@@ -207,7 +208,7 @@ function fakeFinishGame(score) {
 		J.draw(J.Boss.x, J.Boss.y, J.Boss.radius, J.Boss.color);
 
 		
-		bossLife = 30;
+		bossLife = J.BossLife;
 		$('#boss-life').html(bossLife).show()
 		J.scoreNeeded += 30
 		setTimeout(function(){
@@ -248,7 +249,7 @@ function fakeFinishGame(score) {
 				J.level += 1;
 				J.scoreNeeded += 15;
 				J.bossFireRate += 2;
-				J.Boss.BossLife += 10;
+				J.Boss.BossLife += 5;
 				J.Player.radius += 10;
 				lS.setItem('BossKilled', 1);
 				clearInterval(bossCounter)
@@ -505,7 +506,7 @@ function fakeFinishGame(score) {
 		$('#you-died-score').html(score)
 		$('#you-died-points-word').html(wordpoints)
 		$('#you-died').show()
-		
+		J.scoreNeeded = 30;
 		clearInterval(J.interval)
 		clearInterval(J.bossInterval)
 		clearInterval(J.BossLiveInterval)
