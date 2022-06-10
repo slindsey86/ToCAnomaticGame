@@ -14,6 +14,10 @@ function rand(min, max) { return Math.floor(Math.random() * (max - min)) + min; 
 function frand(min,max){ return Math.random() * (max - min) + min;} //float arandom
 var bossCounter;
 var lS = localStorage;
+function fakeFinishGame(score) {
+	const data = { type: 'FINISH_MINIGAME', payload: { score: score } };
+	window.parent.postMessage(data, '*');
+}
 (function(){
 	var J = {
 	lastTime: (new Date()).getTime(),  //lasttime
@@ -317,13 +321,7 @@ var lS = localStorage;
 	     r = Math.random()
 	     circle.vx += frand(-1,1)
 	     circle.vy += frand(-1,1)
-	     
-/*
-		if(Math.abs(circle.vx) + Math.abs(circle.vy) < 1) {
-		     circle.vx = (circle.vx < 0) ? -1 : 1
-		     circle.vy = (circle.vy < 0) ? -1 : 1
-		}
-*/
+
 		J.circles.push(circle)
 		
 		J.Boss.shoot()
@@ -520,18 +518,16 @@ var lS = localStorage;
 		}
    	},
    	death: function(){
+			let gameOver = true;
    		score = J.Player.score
-		if (score > 10) { 
-			deathsAbove10 = lS.getItem('deathsAbove10');
-			lS.setItem('deathsAbove10', ++deathsAbove10)
-		 }
+	
 
-		//J.deleteAll();
 		$(J.canvas).unbind('mousemove').css('cursor', 'default')
 		wordpoints = (score > 1) ? 'points' : 'point'
 		$('#you-died-score').html(score)
 		$('#you-died-points-word').html(wordpoints)
 		$('#you-died').show()
+		fakeFinishGame(score)
 		clearInterval(J.interval)
 		clearInterval(J.bossInterval)
 		clearInterval(J.BossLiveInterval)
