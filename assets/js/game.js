@@ -36,10 +36,6 @@ function fakeFinishGame(score) {
 		x: this.canvasWidth/2,
 		y: this.canvasHeight/2,
 		radius: 10,
-		bombs: 0,
-		bombsEnabled : false,
-		maxBombs : 0,
-		bombsMod: false,
 		score: 0
 	},	
 	circleRadius : 10,
@@ -65,24 +61,28 @@ function fakeFinishGame(score) {
 		J.Player.ry = J.canvasHeight/2
 		J.Player.radius = 10
 		J.Player.score = 0
-		J.Player.bombsEnabled = true,
-		J.Player.maxBombs = 2
-		J.Player.bombs = 1
 	
-		if (J.Player.bombsMod) {
-			J.Player.maxBombs = J.Player.bombsMod
-			J.Player.bombs = J.Player.bombsMod
-		}
-		
-			
-		J.setBombs(J.Player.maxBombs)
 	},
+	resetLevelValues: function(){
+		J.lastTime = (new Date()).getTime(),  //lasttime
+		J.startx   = 100,
+		J.starty  = 100,
+		J.circleRadius =  10 + J.level
+		J.deleteAll()
 
+		J.Player.x = J.canvasWidth/2
+		J.Player.y = J.canvasHeight/2
+		J.Player.rx = J.canvasWidth/2
+		J.Player.ry = J.canvasHeight/2
+		J.Player.radius = 12
+		
+	
+	},
 	init: function(restart){
 		J.canvas = document.getElementById('canvas');
 		J.ctx = J.canvas.getContext('2d')
-		J.canvasWidth = 800
-       	J.canvasHeight = 576
+		J.canvasWidth = 1080
+       	J.canvasHeight = 856
 
        	J.setScore(0)
        	J.setMaxScore(lS.getItem('maxScore') | 0);
@@ -113,31 +113,22 @@ function fakeFinishGame(score) {
 		J.ctx.textBaseLine = 'middle';
 		J.ctx.textAlign = 'center';
 
-		if (text == 'Level ' + J.level) {
-			
-			
+		if (text == 'Level ' + J.level) {			
+			J.scoreNeeded = 30;
 			J.ctx.font = "bold 24px lunchTime";
-			J.ctx.fillText(text, 400, 300);
+			J.ctx.fillText(text, 500, 400);
 		}
 
 		if (text == 'boss1') {
 			
 			J.ctx.font = "bold 24px lunchTime";
-			J.ctx.fillText('Mega Particle!', 400, 300);
+			J.ctx.fillText('Mega Particle!', 500, 400);
 			
 			J.ctx.font = "bold 18px lunchTime";
-			J.ctx.fillText('Dodge the deadly particles for 30 seconds!', 400, 340);
+			J.ctx.fillText('Dodge the deadly particles for 30 seconds!', 500, 440);
 			
 		}
 
-		if (text == 'reset') {
-			J.ctx.font = "bold 24px lunchTime";
-			J.ctx.fillText('Congratulations!', 400, 300);
-
-			J.ctx.font = "bold 18px lunchTime";
-			J.ctx.fillText('More levels coming soon!', 400, 340);
-			
-		}
 
 		  $('#start').css('display', 'none')
 		  setTimeout(() => {
@@ -182,6 +173,9 @@ function fakeFinishGame(score) {
 		if (J.level < 2) {
 		J.resetStartValues();
 		}
+		else { 
+			J.resetLevelValues()
+		}
 		J.interval = setInterval(J.tick, J.fps);
 		J.spawnCircles()
 		$('canvas').css('cursor', 'none')
@@ -201,9 +195,7 @@ function fakeFinishGame(score) {
 			}
 			else J.spawnCirclesCounter = 0;
 		}, 60)
-		if (score % 20 == 0) {
-			J.bombs += 1;
-		}
+		
 
 	},
 
@@ -217,10 +209,12 @@ function fakeFinishGame(score) {
 		
 		bossLife = 30;
 		$('#boss-life').html(bossLife).show()
+		J.scoreNeeded += 30
 		setTimeout(function(){
 			bossCounter = setInterval(function(){
 				//timer
 				J.setScore(++J.Player.score)
+			
 				bossLife = bossLife - 1;
 				$('#boss-life').html(bossLife).show()
 				if (bossLife <= 0)
@@ -231,7 +225,7 @@ function fakeFinishGame(score) {
 			}, 1000);
 			J.Boss.shoot()
 			
-			J.BossLiveInterval = setTimeout(J.Boss.die, bossLife*1000);
+			J.BossLiveInterval = setTimeout(J.Boss.die, (bossLife+1)*1000);
 		}, 3000) 	
 	},
 
@@ -242,25 +236,26 @@ function fakeFinishGame(score) {
 			//x : J.canvasHeight / 4 * 3,
 			//y : J.canvasWidth / 2,
 			x : J.canvasWidth/2,
-			y : 20,
+			y : 40,
 
 			alive : true,
 			shoot: function(){
 				J.bossInterval = setTimeout(J.createShoot, J.bossFireRate)
 			},
 			die: function(){
-				J.deleteAll(),
 				J.Boss = {};
 				J.BossKilled = 1;
 				J.level += 1;
 				J.scoreNeeded += 15;
-				J.Player.bombs += 2;
 				J.bossFireRate += 2;
-				BossLife += 10;
+				J.Boss.BossLife += 10;
+				J.Player.radius += 10;
 				lS.setItem('BossKilled', 1);
 				clearInterval(bossCounter)
-				J.canvasWrite('reset', function(){reset = 0})
-
+				clearInterval(J.bossInterval)
+				J.deleteAll();
+				J.deleteItem(J.Player.rx, J.Player.ry, J.Player.radius)
+				J.canvasWrite('Level ' + J.level, J.start)
 				
 	
 			},
@@ -341,9 +336,7 @@ function fakeFinishGame(score) {
 		}
 		
 	},
-	setBombs: function(bombs){
-		$('#bombs').html(bombs)
-	},
+
 	setMaxScore: function(score){
 		lS.setItem('maxScore',  score);
 		$('#max-score').html(lS.getItem('maxScore'))
@@ -431,6 +424,7 @@ function fakeFinishGame(score) {
 
 		return circle;
 	},
+
 	mouseMove: function(e) {
 		var mouseX, mouseY;
 
@@ -456,20 +450,7 @@ function fakeFinishGame(score) {
 		var touch = e.originalEvent.touches[0] || e.originalEvent.changedTouches[0]
 		J.mouseMove(touch)
 	},
-	keyPress: function(e){
-		console.log(e.keyCode); 
-		if(e.keyCode == 98 && J.Player.bombsEnabled && J.Player.bombs){
-			J.useBomb()
-		}
-	},
-	useBomb: function(){
-		J.Player.bombs--;
-		J.deleteAll();
-		if (!J.Boss) {
-			J.spawnCircles();
-		}
-		J.setBombs(J.Player.bombs);
-	},
+	
     detectCollision : function() {
 		for(var i = 0; i < J.circles.length; i++) {
 			circle = J.circles[i]
@@ -486,8 +467,8 @@ function fakeFinishGame(score) {
 				}
 			}
 		}
-		if(J.Boss){
 
+		if(J.Boss){
 			dist = Math.pow(
 				Math.pow(J.Boss.x - J.Player.x,2) + 
 				Math.pow(J.Boss.y - J.Player.y,2),
@@ -501,6 +482,7 @@ function fakeFinishGame(score) {
 		}
 		
    	},
+
    	eat: function(index){
    		circle = J.circles[index]
    		J.deleteItem(circle.x, circle.y, circle.radius)
@@ -513,25 +495,25 @@ function fakeFinishGame(score) {
 		if((J.Player.score) == J.scoreNeeded){
 			J.deleteAll();
 			J.deleteItem(J.Player.rx, J.Player.ry, J.Player.radius)
-
 			J.canvasWrite('boss1', J.spawnBoss)
 		}
    	},
    	death: function(){
-			let gameOver = true;
    		score = J.Player.score
-	
-
 		$(J.canvas).unbind('mousemove').css('cursor', 'default')
 		wordpoints = (score > 1) ? 'points' : 'point'
 		$('#you-died-score').html(score)
 		$('#you-died-points-word').html(wordpoints)
 		$('#you-died').show()
-		fakeFinishGame(score)
+		
 		clearInterval(J.interval)
 		clearInterval(J.bossInterval)
 		clearInterval(J.BossLiveInterval)
-		clearInterval(bossCounter)
+		clearInterval(J.maxCircleRadiusInterval)
+		clearInterval(bossCounter)		
+		J.level = 1;
+		fakeFinishGame(score)
+		J.deleteAll();
 		
 		J.init(true);
    	},
