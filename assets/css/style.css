@@ -42,7 +42,16 @@ table {
 	border-collapse: collapse;
 	border-spacing: 0;
 }
-
+#startBoss {
+	display: none;
+	top: 300px;
+	position: absolute;
+	color: white;
+	font-size: 24px;
+	
+	width: 1080px;
+	text-align: center;
+}
 
 
 
@@ -108,7 +117,16 @@ footer a, footer a:visited{
 	border-bottom: 1px solid #ccc;
 	font-size: 18px;
 }
-
+#start-level{
+	display:none;
+	top: 300px;
+	position: absolute;
+	color: white;
+	font-size: 24px;
+	
+	width: 1080px;
+	text-align: center;
+}
 #start{
 	top: 300px;
 	position: absolute;

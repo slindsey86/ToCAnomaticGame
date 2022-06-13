@@ -28,6 +28,7 @@ function fakeFinishGame(score) {
 	var J = {
 		lastTime: (new Date()).getTime(),  //lasttime
 		BossLife: 30,
+		spawnRate: 60,
 		canvasWidth: 600,
 		canvasHeight: 600,
 		interval: 0,
@@ -137,19 +138,17 @@ function fakeFinishGame(score) {
 
 			if (text == 'Level ' + J.level) {
 				//J.scoreNeeded = 30;
+				$('#start-level').show()
+				$('#levelnumber').html(J.level)
 				$(".content").css("background-image", "url(anomatic-bg.png)");
-				J.ctx.font = "bold 24px lunchTime";
-				J.ctx.fillText(text, 500, 400);
+				
 
 			}
 
 			if (text == 'boss1') {
 				$(".content").css("background-image", "url(anomatic-bg-boss.png)");
-				J.ctx.font = "bold 24px lunchTime";
-				J.ctx.fillText('Mega Particle!', 500, 400);
-
-				J.ctx.font = "bold 18px lunchTime";
-				J.ctx.fillText('Dodge the deadly particles for 30 seconds!', 500, 440);
+				$("#startBoss").show();
+				$('#boss-health').html(J.BossLife)
 
 			}
 
@@ -160,6 +159,7 @@ function fakeFinishGame(score) {
 				J.ctx.fillStyle = "#000"
 				J.ctx.font = "bold 24px lunchTime";
 				J.ctx.clearRect(200, 200, 400, 300);
+				$('#start-level').css('display', 'none')
 				$(J.canvas).mousemove(J.mouseMove).css('cursor', 'none')
 				cb()
 			}, 3000);
@@ -218,12 +218,13 @@ function fakeFinishGame(score) {
 					J.spawnCircles()
 				}
 				else J.spawnCirclesCounter = 0;
-			}, 60)
+			}, J.spawnRate)
 
 
 		},
 
 		spawnBoss: function () {
+			$('#startBoss').css('display', 'none')
 			J.deleteObj(J.Player)
 			J.Player.radius = 10;
 
@@ -271,7 +272,7 @@ function fakeFinishGame(score) {
 					J.level += 1;
 					J.scoreNeeded += 15;
 					J.bossFireRate += 2;
-					J.Boss.BossLife += 5;
+					J.BossLife += 5;
 					J.Player.radius += 10;
 					lS.setItem('BossKilled', 1);
 					clearInterval(bossCounter)
@@ -366,11 +367,11 @@ function fakeFinishGame(score) {
 			$('#60maxScore-progress').html(score)
 		},
 		tick: function () {
-
+			J.ctx.clearRect(0, 0, canvas.width, canvas.height);
 			now = (new Date()).getTime()
 			window.elapsed = now - J.lastTime
 			J.lastTime = now
-			J.ctx.clearRect(0, 0, canvas.width, canvas.height);
+			
 			for (var i = 0; i < J.circles.length; i++) {
 				var circle = J.circles[i];
 				J.deleteItem(circle.x, circle.y, circle.radius)
@@ -392,8 +393,9 @@ function fakeFinishGame(score) {
 				color: J.colors[rand(0, J.colors.length - 1)],
 
 				move: function () {
+				
 					if (this.inBounds()) {
-
+						
 						this.x += this.vx * elapsed / 15
 						this.y += this.vy * elapsed / 15
 					} else {
@@ -519,6 +521,9 @@ function fakeFinishGame(score) {
 			if ((J.Player.score) == J.scoreNeeded) {
 				J.deleteAll();
 				J.deleteItem(J.Player.rx, J.Player.ry, J.Player.radius)
+				if (J.spawnRate > 0) {
+				J.spawnRate -= 5
+				}
 				J.canvasWrite('boss1', J.spawnBoss)
 			}
 		},
