@@ -131,13 +131,14 @@ function fakeFinishGame(score) {
 
 			if (text == 'Level ' + J.level) {
 				//J.scoreNeeded = 30;
+				$(".content").css("background-image", "url(anomatic-bg.png)");
 				J.ctx.font = "bold 24px lunchTime";
 				J.ctx.fillText(text, 500, 400);
 
 			}
 
 			if (text == 'boss1') {
-
+				$(".content").css("background-image", "url(anomatic-bg-boss.png)");
 				J.ctx.font = "bold 24px lunchTime";
 				J.ctx.fillText('Mega Particle!', 500, 400);
 
@@ -150,7 +151,7 @@ function fakeFinishGame(score) {
 			$('#start').css('display', 'none')
 			setTimeout(() => {
 
-				J.ctx.fillStyle = "#000";
+				J.ctx.fillStyle = "#000"
 				J.ctx.font = "bold 24px lunchTime";
 				J.ctx.clearRect(200, 200, 400, 300);
 				$(J.canvas).mousemove(J.mouseMove).css('cursor', 'none')
@@ -162,8 +163,9 @@ function fakeFinishGame(score) {
 		deleteItem: function (x, y, radius) {
 			J.ctx.beginPath();
 			J.ctx.arc(x, y, radius + 1, 0, Math.PI * 2, false)
-			J.ctx.fillStyle = '#000'
+			J.ctx.fillStyle = "#000"
 			J.ctx.closePath()
+			 
 			J.ctx.fill();
 
 		},
@@ -171,7 +173,7 @@ function fakeFinishGame(score) {
 		deleteObj: function (obj) {
 			J.ctx.beginPath();
 			J.ctx.arc(obj.x, obj.y, obj.radius + 1, 0, Math.PI * 2, false)
-			J.ctx.fillStyle = '#000'
+			J.ctx.fillStyle = "#000"
 			J.ctx.closePath()
 			J.ctx.fill();
 
@@ -362,6 +364,7 @@ function fakeFinishGame(score) {
 			now = (new Date()).getTime()
 			window.elapsed = now - J.lastTime
 			J.lastTime = now
+			J.ctx.clearRect(0, 0, canvas.width, canvas.height);
 			for (var i = 0; i < J.circles.length; i++) {
 				var circle = J.circles[i];
 				J.deleteItem(circle.x, circle.y, circle.radius)
@@ -385,12 +388,12 @@ function fakeFinishGame(score) {
 				move: function () {
 					if (this.inBounds()) {
 
-
 						this.x += this.vx * elapsed / 15
 						this.y += this.vy * elapsed / 15
 					} else {
 
 						for (var i = 0; i < J.circles.length; i++) {
+							
 							if (J.circles[i].x == this.x && J.circles[i].y == this.y) {
 								J.circles[i] = J.createCircle();
 							}
