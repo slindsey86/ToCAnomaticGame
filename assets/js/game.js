@@ -102,6 +102,8 @@ function fakeFinishGame(score) {
 
 			if (restart) {
 				$('#start').show()
+				$('#start-button').css('display', 'none')
+				$('#end-button').show()
 			}
 			$('#start-button').unbind('click').bind('click', function () {
 				audio["intro"].pause(); // Stop playing
@@ -522,6 +524,7 @@ function fakeFinishGame(score) {
 			wordpoints = (score > 1) ? 'points' : 'point'
 			$('#you-died-score').html(score)
 			$('#you-died-points-word').html(wordpoints)
+			$(".content").css("background-image", "url(anomatic-bg-end.png)");
 			$('#you-died').show()
 			J.scoreNeeded = 30;
 			J.deleteAll();
@@ -531,7 +534,6 @@ function fakeFinishGame(score) {
 			clearInterval(J.maxCircleRadiusInterval)
 			clearInterval(bossCounter)
 			J.level = 1;
-			fakeFinishGame(score)		
 
 			J.init(true);
 		},

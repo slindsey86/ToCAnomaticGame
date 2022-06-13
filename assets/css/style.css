@@ -130,7 +130,27 @@ footer a, footer a:visited{
     /* margin: 0 auto; */
     border: 3px solid white;
 }
-
+#end-button{
+	padding: 20px;
+	/* margin: 0 auto; */
+	/* position: relative; */
+	display: none;
+	width: 400px;
+	/* float: left; */
+	/* margin: 0 auto; */
+	border: 3px solid white;
+}
+#end {
+	top: 300px;
+	position: absolute;
+	color: white;
+	font-size: 24px;
+	
+	width: 1080px;
+	text-align: center;
+	
+	
+}
 #you-died{
 	width: 1080px;
 	left: 0px;
