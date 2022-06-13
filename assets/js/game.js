@@ -12,9 +12,10 @@ function timer() {
 var audio = {};
 audio["intro"] = new Audio();
 audio["intro"].src = 'assets/js/Anomatic-Intro.wav'
+audio["intro"].volume = 0.5
 audio["loop"] = new Audio();
 audio["loop"].src = 'assets/js/Anomatic-Loop.wav'
-
+audio["loop"].volume = 0.5
 function rand(min, max) { return Math.floor(Math.random() * (max - min)) + min; }
 function frand(min, max) { return Math.random() * (max - min) + min; } //float arandom
 var bossCounter;
