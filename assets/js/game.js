@@ -104,6 +104,9 @@ function fakeFinishGame(score) {
 				$('#start').show()
 				$('#start-button').css('display', 'none')
 				$('#end-button').show()
+				$('#end-button').unbind('click').bind('click', function () {
+					fakeFinishGame(score)
+				})
 			}
 			$('#start-button').unbind('click').bind('click', function () {
 				audio["intro"].pause(); // Stop playing
