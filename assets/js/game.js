@@ -11,7 +11,7 @@ function timer() {
 
 var audio = {};
 audio["intro"] = new Audio();
-audio["intro"].src = 'assets/js/Anomatic-Intro.wav'
+audio["intro"].src = 'assets/js/Anomatic-Intro.mp3'
 audio["intro"].volume = 0.5
 audio["loop"] = new Audio();
 audio["loop"].src = 'assets/js/Anomatic-Loop.mp3'
