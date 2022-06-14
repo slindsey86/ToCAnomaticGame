@@ -234,7 +234,7 @@ function fakeFinishGame(score) {
 
 			bossLife = J.BossLife;
 			$('#boss-life').html(bossLife).show()
-			J.scoreNeeded += 30
+			J.scoreNeeded += J.BossLife
 			setTimeout(function () {
 				bossCounter = setInterval(function () {
 					//timer
@@ -270,10 +270,9 @@ function fakeFinishGame(score) {
 					J.Boss = {};
 					J.BossKilled = 1;
 					J.level += 1;
-					J.scoreNeeded += 15;
-					J.bossFireRate += 2;
+					J.scoreNeeded += 20;
+					J.bossFireRate -= 2;
 					J.BossLife += 5;
-					J.Player.radius += 10;
 					lS.setItem('BossKilled', 1);
 					clearInterval(bossCounter)
 					clearInterval(J.bossInterval)
